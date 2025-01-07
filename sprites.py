@@ -7,6 +7,7 @@ from constants import *
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
+    
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -61,7 +62,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, platforms, grounds, waters):
         super().__init__()
         self.point = "left"
-        self.image = load_image("images\Main_hero_left_1.png")
+        self.image = load_image("images/Main_hero_left_1.png")
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))
         self.speed = PLAYER_SPEED
         self.health = PLAYER_HEALTH
@@ -87,9 +88,9 @@ class Player(pygame.sprite.Sprite):
     def _animated_movement(self):
         self.number_of_pos = self.time_num % 3 + 1
         if self.point == "left":
-            self.image = load_image(f"images\Main_hero_left_{self.number_of_pos}.png")
+            self.image = load_image(f"images/Main_hero_left_{self.number_of_pos}.png")
         else:
-            self.image = load_image(f"images\Main_hero_right_{self.number_of_pos}.png")
+            self.image = load_image(f"images/Main_hero_right_{self.number_of_pos}.png")
 
     def set_pos(self, time):
         if self.time_of_animation == 0:

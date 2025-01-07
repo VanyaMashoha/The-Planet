@@ -1,4 +1,5 @@
 import pygame
+import os
 from constants import *
 from sprites import Player, Bullet, Particle
 from database import DatabaseManager
@@ -17,7 +18,7 @@ class Game:
 
         self._init_sprites()
         self.running = True
-        self.tmx_data = load_pygame('data/maps/spawn.tmx')
+        self.tmx_data = load_pygame(r'data/maps/spawn.tmx')
         one, two = 0, 0
         for _ in range(30 * 17):
             if one != 1 and two != 1:
