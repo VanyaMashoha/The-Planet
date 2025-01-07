@@ -1,7 +1,25 @@
 import math
+import os
 import random
 import pygame
+import sys
 from constants import *
+
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    if colorkey is not None:
+        image = image.convert()
+        if colorkey == -1:
+            colorkey = image.get_at((0, 0))
+            image.set_colorkey(colorkey)
+        else:
+            image = image.convert_alpha()
+    return image
+
 
 
 class Particle(pygame.sprite.Sprite):
@@ -40,10 +58,10 @@ class Platform(pygame.sprite.Sprite):
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, platforms):
+    def __init__(self, platforms, grounds, waters):
         super().__init__()
-        self.image = pygame.Surface((40, 40))
-        self.image.fill(YELLOW)
+        self.point = "left"
+        self.image = load_image("images\Main_hero_left_1.png")
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))
         self.speed = PLAYER_SPEED
         self.health = PLAYER_HEALTH
@@ -51,24 +69,59 @@ class Player(pygame.sprite.Sprite):
 
         self.velocity_y = 0
         self.velocity_x = 0
+        self.number_of_pos = 1
+        self.time_num = 0
+        self.time_of_animation = 0
         self.on_ground = False
         self.platforms = platforms
+        self.grounds = grounds
+        self.waters = waters
 
-    def update(self, keys):
-        self._handle_horizontal_movement(keys)
-        self._handle_vertical_movement(keys)
+    def update(self, keys, time):
+        self._handle_horizontal_movement(keys, time)
+        self._handle_vertical_movement()
         self._handle_rotation()
         self._handle_boundaries()
+        self._animated_movement()
+    
+    def _animated_movement(self):
+        self.number_of_pos = self.time_num % 3 + 1
+        if self.point == "left":
+            self.image = load_image(f"images\Main_hero_left_{self.number_of_pos}.png")
+        else:
+            self.image = load_image(f"images\Main_hero_right_{self.number_of_pos}.png")
 
-    def _handle_horizontal_movement(self, keys):
+    def set_pos(self, time):
+        if self.time_of_animation == 0:
+            self.time_of_animation = time
+        if (time - self.time_of_animation) % 20 == 0:
+            self.time_num += 1
+
+    def _handle_horizontal_movement(self, keys, time):
         self.velocity_x = 0
+        self.velocity_y = 0
         if keys[pygame.K_a]:
-            self.velocity_x = -self.speed
+            self.velocity_x, self.point = -self.speed, 'left'
+            self.set_pos(time)
         if keys[pygame.K_d]:
-            self.velocity_x = self.speed
+            self.velocity_x, self.point = self.speed, 'right'
+            self.set_pos(time)
+        if keys[pygame.K_w]:
+            self.velocity_y = -self.speed
+            self.set_pos(time)
+        if keys[pygame.K_s]:
+            self.velocity_y = self.speed
+            self.set_pos(time)
 
         future_rect = self.rect.copy()
         future_rect.x += self.velocity_x
+        future_rect.y += self.velocity_y
+
+        for water in self.waters:
+            if future_rect.colliderect(water.rect_left) or future_rect.colliderect(water.rect_right):
+                self.velocity_x = 0
+            if future_rect.colliderect(water.rect_top) or future_rect.colliderect(water.rect_bottom):
+                self.velocity_y = 0
 
         # Проверка границ карты
         if 0 <= future_rect.x and future_rect.right <= SCREEN_WIDTH:
@@ -81,12 +134,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.velocity_x < 0:
                     self.rect.left = platform.rect.right
 
-    def _handle_vertical_movement(self, keys):
-        if keys[pygame.K_SPACE] and self.on_ground:
-            self.velocity_y = PLAYER_JUMP_SPEED
-            self.on_ground = False
-
-        self.velocity_y += GRAVITY
+    def _handle_vertical_movement(self):
         future_rect = self.rect.copy()
         future_rect.y += self.velocity_y
 
@@ -151,61 +199,3 @@ class Bullet(pygame.sprite.Sprite):
 
         if not (0 <= self.rect.x <= SCREEN_WIDTH and 0 <= self.rect.y <= SCREEN_HEIGHT):
             self.kill()
-
-
-class NPC(pygame.sprite.Sprite):
-    def __init__(self, x, y, platforms):
-        super().__init__()
-        self.image = pygame.Surface((30, 30))
-        self.image.fill(RED)
-        self.rect = self.image.get_rect(center=(x, y))
-        self.speed = NPC_SPEED
-        self.health = NPC_HEALTH
-        self.damage_timer = 0
-        self.platforms = platforms
-        self.velocity_y = 0
-
-    def update(self, player, npcs):
-        self._apply_gravity()
-        self._handle_movement(player)
-        self._handle_player_collision(player)
-        self._handle_boundaries()
-
-    def _apply_gravity(self):
-        self.velocity_y += GRAVITY
-        self.rect.y += self.velocity_y
-
-        for platform in self.platforms:
-            if self.rect.colliderect(platform.rect):
-                if self.velocity_y > 0:
-                    self.rect.bottom = platform.rect.top
-                    self.velocity_y = 0
-
-    def _handle_movement(self, player):
-        if abs(player.rect.x - self.rect.x) > 10:
-            future_rect = self.rect.copy()
-
-            if player.rect.x > self.rect.x:
-                future_rect.x += self.speed
-            else:
-                future_rect.x -= self.speed
-
-            # Проверка границ перед движением
-            if 0 <= future_rect.x and future_rect.right <= SCREEN_WIDTH:
-                self.rect.x = future_rect.x
-
-    def _handle_player_collision(self, player):
-        if self.rect.colliderect(player.rect):
-            if pygame.time.get_ticks() - self.damage_timer > 1000:
-                player.health -= 10
-                self.damage_timer = pygame.time.get_ticks()
-
-    def _handle_boundaries(self):
-        if self.rect.left < 0:
-            self.rect.left = 0
-        elif self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
-
-        if self.rect.bottom > SCREEN_HEIGHT:
-            self.rect.bottom = SCREEN_HEIGHT
-            self.velocity_y = 0

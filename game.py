@@ -1,7 +1,10 @@
 import pygame
 from constants import *
-from sprites import Platform, Player, NPC, Bullet, Particle
+from sprites import Player, Bullet, Particle
 from database import DatabaseManager
+from pytmx.util_pygame import load_pygame
+from map_classes.ground import Ground
+from map_classes.water import Water
 
 
 class Game:
@@ -14,42 +17,39 @@ class Game:
 
         self._init_sprites()
         self.running = True
+        self.tmx_data = load_pygame('data/maps/spawn.tmx')
+        one, two = 0, 0
+        for _ in range(30 * 17):
+            if one != 1 and two != 1:
+                self.ground_group.add(Ground(one, two))
+            else:
+                self.water_group.add(Water(one, two))
+            one += 1
+            if one == 30:
+                one, two = 0, two + 1
+
+    def draw_map(self, screen, tmx_data):
+        for layer in tmx_data.visible_layers:
+            for x, y, gid in layer:
+                if gid != 0:
+                    tile = tmx_data.get_tile_image_by_gid(gid)
+                    screen.blit(tile, (x * tmx_data.tilewidth, y * tmx_data.tileheight))
 
     def _init_sprites(self):
         self.platforms = pygame.sprite.Group()
-        self._create_platforms()
+        self.ground_group = pygame.sprite.Group()
+        self.water_group = pygame.sprite.Group()
 
-        self.player = Player(self.platforms)
-        self.npcs = pygame.sprite.Group(
-            NPC(200, 150, self.platforms), NPC(600, 450, self.platforms)
-        )
+        self.player = Player(self.platforms, self.ground_group, self.water_group)
         self.bullets = pygame.sprite.Group()
         self.particles = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group(self.platforms, self.player, *self.npcs)
-
-    def _create_platforms(self):
-        # Земля
-        self.platforms.add(Platform(0, SCREEN_HEIGHT - 40, SCREEN_WIDTH, 40))
-        
-        # Платформы 
-        self.platforms.add(Platform(300, 400, 200, 20))
-        self.platforms.add(Platform(100, 300, 200, 20))
-        self.platforms.add(Platform(500, 200, 200, 20))
+        self.all_sprites = pygame.sprite.Group(self.platforms, self.player, self.water_group)
 
     def create_impact_particles(self, x, y, color):
         for _ in range(PARTICLE_COUNT):
             particle = Particle(x, y, color)
             self.particles.add(particle)
             self.all_sprites.add(particle)
-
-    def draw_gradient_background(self):
-        for y in range(SCREEN_HEIGHT):
-            color = (
-                0,
-                int(255 * y / SCREEN_HEIGHT),
-                int(255 * (1 - y / SCREEN_HEIGHT)),
-            )
-            pygame.draw.line(self.screen, color, (0, y), (SCREEN_WIDTH, y))
 
     def handle_events(self):
         keys = pygame.key.get_pressed()
@@ -59,6 +59,11 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+            if event.type == pygame.KEYUP and (event.key == pygame.K_a or event.key == pygame.K_d):
+                self.player.time_num = 0
+                self.player.time_of_animation = 0
+                keys = self.handle_events()
+                self.update(keys)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self._create_bullet()
@@ -73,9 +78,8 @@ class Game:
         self.all_sprites.add(bullet)
 
     def update(self, keys):
-        self.player.update(keys)
-        for npc in self.npcs:
-            npc.update(self.player, self.npcs)
+        time = pygame.time.get_ticks()
+        self.player.update(keys, time)
         self.bullets.update()
         self.particles.update()
 
@@ -90,21 +94,8 @@ class Game:
                 bullet.kill()
                 continue
 
-            hit_npcs = pygame.sprite.spritecollide(bullet, self.npcs, False)
-            for npc in hit_npcs:
-                npc.health -= 10
-                self.create_impact_particles(
-                    bullet.rect.centerx, bullet.rect.centery, RED
-                )
-                bullet.kill()
-                if npc.health <= 0:
-                    self.create_impact_particles(
-                        npc.rect.centerx, npc.rect.centery, RED
-                    )
-                    npc.kill()
-
     def draw(self):
-        self.draw_gradient_background()
+        self.draw_map(self.screen, self.tmx_data)
         self.all_sprites.draw(self.screen)
 
         # Отрисовка UI
