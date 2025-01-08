@@ -5,9 +5,10 @@ import pygame
 import sys
 from constants import *
 
+
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    
+    fullname = os.path.join("data", name)
+
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -20,7 +21,6 @@ def load_image(name, colorkey=None):
         else:
             image = image.convert_alpha()
     return image
-
 
 
 class Particle(pygame.sprite.Sprite):
@@ -84,7 +84,7 @@ class Player(pygame.sprite.Sprite):
         self._handle_rotation()
         self._handle_boundaries()
         self._animated_movement()
-    
+
     def _animated_movement(self):
         self.number_of_pos = self.time_num % 3 + 1
         if self.point == "left":
@@ -102,10 +102,10 @@ class Player(pygame.sprite.Sprite):
         self.velocity_x = 0
         self.velocity_y = 0
         if keys[pygame.K_a]:
-            self.velocity_x, self.point = -self.speed, 'left'
+            self.velocity_x, self.point = -self.speed, "left"
             self.set_pos(time)
         if keys[pygame.K_d]:
-            self.velocity_x, self.point = self.speed, 'right'
+            self.velocity_x, self.point = self.speed, "right"
             self.set_pos(time)
         if keys[pygame.K_w]:
             self.velocity_y = -self.speed
@@ -119,9 +119,13 @@ class Player(pygame.sprite.Sprite):
         future_rect.y += self.velocity_y
 
         for water in self.waters:
-            if future_rect.colliderect(water.rect_left) or future_rect.colliderect(water.rect_right):
+            if future_rect.colliderect(water.rect_left) or future_rect.colliderect(
+                water.rect_right
+            ):
                 self.velocity_x = 0
-            if future_rect.colliderect(water.rect_top) or future_rect.colliderect(water.rect_bottom):
+            if future_rect.colliderect(water.rect_top) or future_rect.colliderect(
+                water.rect_bottom
+            ):
                 self.velocity_y = 0
 
         # Проверка границ карты

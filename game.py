@@ -4,6 +4,7 @@ from constants import *
 from sprites import Player, Bullet, Particle
 from database import DatabaseManager
 from pytmx.util_pygame import load_pygame
+from pytmx import TiledMap
 from map_classes.ground import Ground
 from map_classes.water import Water
 
@@ -18,7 +19,7 @@ class Game:
 
         self._init_sprites()
         self.running = True
-        self.tmx_data = load_pygame(r'data/maps/spawn.tmx')
+        self.tmx_data = load_pygame(r"data/maps/spawn.tmx")
         one, two = 0, 0
         for _ in range(30 * 17):
             if one != 1 and two != 1:
@@ -29,7 +30,7 @@ class Game:
             if one == 30:
                 one, two = 0, two + 1
 
-    def draw_map(self, screen, tmx_data):
+    def draw_map(self, screen, tmx_data: TiledMap):
         for layer in tmx_data.visible_layers:
             for x, y, gid in layer:
                 if gid != 0:
@@ -44,7 +45,9 @@ class Game:
         self.player = Player(self.platforms, self.ground_group, self.water_group)
         self.bullets = pygame.sprite.Group()
         self.particles = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group(self.platforms, self.player, self.water_group)
+        self.all_sprites = pygame.sprite.Group(
+            self.platforms, self.player, self.water_group
+        )
 
     def create_impact_particles(self, x, y, color):
         for _ in range(PARTICLE_COUNT):
@@ -60,7 +63,9 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-            if event.type == pygame.KEYUP and (event.key == pygame.K_a or event.key == pygame.K_d):
+            if event.type == pygame.KEYUP and (
+                event.key == pygame.K_a or event.key == pygame.K_d
+            ):
                 self.player.time_num = 0
                 self.player.time_of_animation = 0
                 keys = self.handle_events()
