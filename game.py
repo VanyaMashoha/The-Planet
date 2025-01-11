@@ -17,19 +17,22 @@ class Game:
         self.clock = pygame.time.Clock()
         self.db = DatabaseManager()
 
-        self._init_sprites()
-        self.running = True
+        self._init_sprites() # Инициализация спрайтов
+        self.running = True 
         self.tmx_data = load_pygame(r"data/maps/spawn.tmx")
+
+        # Создание карты
         one, two = 0, 0
         for _ in range(30 * 17):
             if one != 1 and two != 1:
-                self.ground_group.add(Ground(one, two))
+                self.ground_group.add(Ground(one, two)) # Добавление земли
             else:
-                self.water_group.add(Water(one, two))
+                self.water_group.add(Water(one, two)) # Добавление воды
             one += 1
             if one == 30:
                 one, two = 0, two + 1
 
+    # Отрисовка карты
     def draw_map(self, screen, tmx_data: TiledMap):
         for layer in tmx_data.visible_layers:
             for x, y, gid in layer:
@@ -37,6 +40,7 @@ class Game:
                     tile = tmx_data.get_tile_image_by_gid(gid)
                     screen.blit(tile, (x * tmx_data.tilewidth, y * tmx_data.tileheight))
 
+    # Инициализация групп спрайтов
     def _init_sprites(self):
         self.platforms = pygame.sprite.Group()
         self.ground_group = pygame.sprite.Group()
@@ -49,40 +53,44 @@ class Game:
             self.platforms, self.player, self.water_group
         )
 
+    # Создание частиц при столкновении
     def create_impact_particles(self, x, y, color):
         for _ in range(PARTICLE_COUNT):
             particle = Particle(x, y, color)
             self.particles.add(particle)
             self.all_sprites.add(particle)
 
+    # Обработка событий 
     def handle_events(self):
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+            if event.type == pygame.QUIT: # Если окно закрыто
+                self.running = False # Остановить игру
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                if event.key == pygame.K_ESCAPE: # Если нажат ESC
+                    self.running = False # Остановить игру
             if event.type == pygame.KEYUP and (
                 event.key == pygame.K_a or event.key == pygame.K_d
             ):
-                self.player.time_num = 0
+                self.player.time_num = 0 # Сброс анимации
                 self.player.time_of_animation = 0
                 keys = self.handle_events()
                 self.update(keys)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    self._create_bullet()
+                if event.button == 1: # Если нажата ЛКМ
+                    self._create_bullet() # Создание пули
 
         return keys
 
+    # Создание пули
     def _create_bullet(self):
         bullet = Bullet(
             self.player.rect.centerx, self.player.rect.centery, self.player.angle
         )
-        self.bullets.add(bullet)
-        self.all_sprites.add(bullet)
+        self.bullets.add(bullet) # Добавление пули в группу
+        self.all_sprites.add(bullet) # Добавление пули в общую группу
 
+    # Обновление состояния игры
     def update(self, keys):
         time = pygame.time.get_ticks()
         self.player.update(keys, time)
@@ -91,6 +99,7 @@ class Game:
 
         self._handle_collisions()
 
+    # Обработка столкновений
     def _handle_collisions(self):
         for bullet in self.bullets:
             if pygame.sprite.spritecollide(bullet, self.platforms, False):
