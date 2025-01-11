@@ -58,7 +58,7 @@ class Platform(pygame.sprite.Sprite):
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, platforms, grounds, waters):
+    def __init__(self, platforms, grounds, waters, walls):
         super().__init__()
         self.point = "left"
         self.image = load_image("images\Main_hero_left_1.png")
@@ -70,57 +70,73 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0
         self.velocity_x = 0
         self.number_of_pos = 1
+        self.time = 0
+        self.time_old = 0
         self.time_num = 0
-        self.time_of_animation = 0
         self.on_ground = False
         self.platforms = platforms
         self.grounds = grounds
         self.waters = waters
+        self.walls = walls
 
-    def update(self, keys, time):
-        self._handle_horizontal_movement(keys, time)
+    def update(self, keys):
+        self.time += 1
+        self._handle_horizontal_movement(keys)
         self._handle_vertical_movement()
         self._handle_rotation()
         self._handle_boundaries()
         self._animated_movement()
     
     def _animated_movement(self):
-        self.number_of_pos = self.time_num % 3 + 1
+        number_of_pos = self.time_num % 3 + 1 
         if self.point == "left":
-            self.image = load_image(f"images\Main_hero_left_{self.number_of_pos}.png")
+            self.image = load_image(f"images\Main_hero_left_{number_of_pos}.png")
         else:
-            self.image = load_image(f"images\Main_hero_right_{self.number_of_pos}.png")
+            self.image = load_image(f"images\Main_hero_right_{number_of_pos}.png")
 
-    def set_pos(self, time):
-        if self.time_of_animation == 0:
-            self.time_of_animation = time
-        if (time - self.time_of_animation) % 20 == 0:
+    def set_pos(self):
+        if self.time_old == 0:
+            self.time_old = self.time
+        if (self.time - self.time_old) % 10 == 0:
             self.time_num += 1
 
-    def _handle_horizontal_movement(self, keys, time):
+    def _handle_horizontal_movement(self, keys):
         self.velocity_x = 0
         self.velocity_y = 0
         if keys[pygame.K_a]:
             self.velocity_x, self.point = -self.speed, 'left'
-            self.set_pos(time)
+            self.set_pos()
         if keys[pygame.K_d]:
             self.velocity_x, self.point = self.speed, 'right'
-            self.set_pos(time)
+            self.set_pos()
         if keys[pygame.K_w]:
             self.velocity_y = -self.speed
-            self.set_pos(time)
+            self.set_pos()
         if keys[pygame.K_s]:
             self.velocity_y = self.speed
-            self.set_pos(time)
+            self.set_pos()
 
         future_rect = self.rect.copy()
         future_rect.x += self.velocity_x
         future_rect.y += self.velocity_y
 
+        future_rect_x = self.rect.copy()
+        future_rect_x.x += self.velocity_x
+
+        future_rect_y = self.rect.copy()
+        future_rect_y.y += self.velocity_y
+
+
         for water in self.waters:
-            if future_rect.colliderect(water.rect_left) or future_rect.colliderect(water.rect_right):
+            if future_rect_x.colliderect(water.rect_left) or future_rect.colliderect(water.rect_right):
                 self.velocity_x = 0
-            if future_rect.colliderect(water.rect_top) or future_rect.colliderect(water.rect_bottom):
+            if future_rect_y.colliderect(water.rect_top) or future_rect.colliderect(water.rect_bottom):
+                self.velocity_y = 0
+
+        for wall in self.walls:
+            if future_rect_x.colliderect(wall.rect_left) or future_rect.colliderect(wall.rect_right):
+                self.velocity_x = 0
+            if future_rect_y.colliderect(wall.rect_top) or future_rect.colliderect(wall.rect_bottom):
                 self.velocity_y = 0
 
         # Проверка границ карты
@@ -136,7 +152,6 @@ class Player(pygame.sprite.Sprite):
 
     def _handle_vertical_movement(self):
         future_rect = self.rect.copy()
-        future_rect.y += self.velocity_y
 
         # Проверка верхней границы
         if future_rect.top < 0:
@@ -183,7 +198,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle):
+    def __init__(self, x, y, angle, walls):
         super().__init__()
         self.image = pygame.Surface((10, 5))
         self.image.fill(YELLOW)
@@ -191,6 +206,7 @@ class Bullet(pygame.sprite.Sprite):
         self.angle = math.radians(angle)
         self.speed = BULLET_SPEED
         self.position = pygame.math.Vector2(x, y)
+        self.walls = walls
 
     def update(self):
         self.position.x += math.cos(self.angle) * self.speed
@@ -198,4 +214,88 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.center = self.position
 
         if not (0 <= self.rect.x <= SCREEN_WIDTH and 0 <= self.rect.y <= SCREEN_HEIGHT):
+            self.kill()
+
+        for wall in self.walls:
+            if self.rect.colliderect(wall.rect):
+                self.kill()
+
+
+class Scorpion(pygame.sprite.Sprite):
+    def __init__(self, x, y, player, walls, waters, bullets):
+        super().__init__()
+        self.image = load_image("images\scorpion_walk_right_1.png")
+        self.rect = self.image.get_rect(center = (x, y))
+        self.speed = SCORPION_SPEED
+        self.health = SCORPION_HEALTH
+        self.player = player
+        self.walls = walls
+        self.waters = waters
+        self.bullets = bullets
+        self.pos = 'right'
+        self.time = 0
+        self.time_num = 0
+        self.col_with_player = False
+        self.time_col_player = 0
+        self.atack_is = False
+
+    def update(self):
+        v_x = 0
+        v_y = 0
+        self.time += 1
+        if self.col_with_player:
+            self.time_col_player += 1
+        if self.time_col_player > 6:
+            self.col_with_player = False
+        if self.time % 30:
+            self.time_num += 1
+        if self.player.rect.x > self.rect.x:
+            self.pos = 'left'
+            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            v_x = self.speed
+        else:
+            self.pos = 'right'
+            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            v_x = -self.speed
+        if self.player.rect.y > self.rect.y:
+            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            v_y = self.speed
+        else:
+            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            v_y = -self.speed
+        
+        if self.atack_is:
+            self.image = load_image(f"images\scorpion_atack_{self.pos}_{self.time_num % 3 + 1}.png")
+        future_rect_x = self.rect.copy()
+        future_rect_x.x += v_x
+
+        future_rect_y = self.rect.copy()
+        future_rect_y.y += v_y
+
+        for water in self.waters:
+            if future_rect_x.colliderect(water.rect):
+                v_x = 0
+            if future_rect_y.colliderect(water.rect):
+                v_y = 0
+
+        for wall in self.walls:
+            if future_rect_x.colliderect(wall.rect):
+                v_x = 0
+            if future_rect_y.colliderect(wall.rect):
+                v_y = 0
+
+        self.rect.x += v_x
+        self.rect.y += v_y
+
+        if self.rect.colliderect(self.player.rect) and not self.col_with_player:
+            self.time_num = 0
+            self.player.health -= 10
+            self.col_with_player = True
+        
+        for bullet in self.bullets:
+            if self.rect.colliderect(bullet.rect):
+                self.health -= 10
+                bullet.kill()
+
+        if self.health < 0:
             self.kill()

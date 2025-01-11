@@ -5,6 +5,8 @@ from database import DatabaseManager
 from pytmx.util_pygame import load_pygame
 from map_classes.ground import Ground
 from map_classes.water import Water
+from map_classes.mountain import Mountain
+from map_classes.crator import Crator
 
 
 class Game:
@@ -14,16 +16,20 @@ class Game:
         pygame.display.set_caption("The Planet")
         self.clock = pygame.time.Clock()
         self.db = DatabaseManager()
-
         self._init_sprites()
         self.running = True
         self.tmx_data = load_pygame('data/maps/spawn.tmx')
         one, two = 0, 0
         for _ in range(30 * 17):
-            if one != 1 and two != 1:
-                self.ground_group.add(Ground(one, two))
-            else:
+            if two == 0:
+                self.mountain_group.add(Mountain(one, two))
+            elif two == 16:
                 self.water_group.add(Water(one, two))
+            elif 0 < two < 16 and one == 29:
+                self.crator_group.add(Crator(one, two, self.player, self.scarpion_group, self.mountain_group,
+                                        self.water_group, self.bullets))
+            else:
+                self.ground_group.add(Ground(one, two))
             one += 1
             if one == 30:
                 one, two = 0, two + 1
@@ -39,11 +45,16 @@ class Game:
         self.platforms = pygame.sprite.Group()
         self.ground_group = pygame.sprite.Group()
         self.water_group = pygame.sprite.Group()
-
-        self.player = Player(self.platforms, self.ground_group, self.water_group)
+        self.mountain_group = pygame.sprite.Group()
+        self.crator_group = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
+        self.scarpion_group = pygame.sprite.Group()
+
+        self.player = Player(self.platforms, self.ground_group, self.water_group, self.mountain_group)
         self.particles = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group(self.platforms, self.player, self.water_group)
+        self.all_sprites = pygame.sprite.Group(self.platforms, self.player,
+                self.water_group, self.mountain_group, self.crator_group, self.scarpion_group
+        )
 
     def create_impact_particles(self, x, y, color):
         for _ in range(PARTICLE_COUNT):
@@ -59,9 +70,9 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-            if event.type == pygame.KEYUP and (event.key == pygame.K_a or event.key == pygame.K_d):
+            if event.type == pygame.KEYUP and (event.key == pygame.K_a or event.key == pygame.K_d or event.key == pygame.K_s or event.key == pygame.K_w):
                 self.player.time_num = 0
-                self.player.time_of_animation = 0
+                self.player.time_old = 0
                 keys = self.handle_events()
                 self.update(keys)
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -72,16 +83,17 @@ class Game:
 
     def _create_bullet(self):
         bullet = Bullet(
-            self.player.rect.centerx, self.player.rect.centery, self.player.angle
+            self.player.rect.centerx, self.player.rect.centery, self.player.angle, self.mountain_group
         )
         self.bullets.add(bullet)
         self.all_sprites.add(bullet)
 
     def update(self, keys):
-        time = pygame.time.get_ticks()
-        self.player.update(keys, time)
+        self.player.update(keys)
         self.bullets.update()
         self.particles.update()
+        self.crator_group.update()
+        self.scarpion_group.update()
 
         self._handle_collisions()
 
