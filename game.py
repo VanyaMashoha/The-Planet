@@ -1,8 +1,10 @@
 import pygame
+import os
 from constants import *
 from sprites import Player, Bullet, Particle
 from database import DatabaseManager
 from pytmx.util_pygame import load_pygame
+from pytmx import TiledMap
 from map_classes.ground import Ground
 from map_classes.water import Water
 from map_classes.mountain import Mountain
@@ -34,13 +36,15 @@ class Game:
             if one == 30:
                 one, two = 0, two + 1
 
-    def draw_map(self, screen, tmx_data):
+    # Отрисовка карты
+    def draw_map(self, screen, tmx_data: TiledMap):
         for layer in tmx_data.visible_layers:
             for x, y, gid in layer:
                 if gid != 0:
                     tile = tmx_data.get_tile_image_by_gid(gid)
                     screen.blit(tile, (x * tmx_data.tilewidth, y * tmx_data.tileheight))
 
+    # Инициализация групп спрайтов
     def _init_sprites(self):
         self.platforms = pygame.sprite.Group()
         self.ground_group = pygame.sprite.Group()
@@ -56,17 +60,19 @@ class Game:
                 self.water_group, self.mountain_group, self.crator_group, self.scarpion_group
         )
 
+    # Создание частиц при столкновении
     def create_impact_particles(self, x, y, color):
         for _ in range(PARTICLE_COUNT):
             particle = Particle(x, y, color)
             self.particles.add(particle)
             self.all_sprites.add(particle)
 
+    # Обработка событий 
     def handle_events(self):
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+            if event.type == pygame.QUIT: # Если окно закрыто
+                self.running = False # Остановить игру
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
@@ -76,18 +82,20 @@ class Game:
                 keys = self.handle_events()
                 self.update(keys)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    self._create_bullet()
+                if event.button == 1: # Если нажата ЛКМ
+                    self._create_bullet() # Создание пули
 
         return keys
 
+    # Создание пули
     def _create_bullet(self):
         bullet = Bullet(
             self.player.rect.centerx, self.player.rect.centery, self.player.angle, self.mountain_group
         )
-        self.bullets.add(bullet)
-        self.all_sprites.add(bullet)
+        self.bullets.add(bullet) # Добавление пули в группу
+        self.all_sprites.add(bullet) # Добавление пули в общую группу
 
+    # Обновление состояния игры
     def update(self, keys):
         self.player.update(keys)
         self.bullets.update()
@@ -97,6 +105,7 @@ class Game:
 
         self._handle_collisions()
 
+    # Обработка столкновений
     def _handle_collisions(self):
         for bullet in self.bullets:
             if pygame.sprite.spritecollide(bullet, self.platforms, False):
