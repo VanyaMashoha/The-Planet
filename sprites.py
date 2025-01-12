@@ -5,8 +5,10 @@ import pygame
 import sys
 from constants import *
 
+
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
+    fullname = os.path.join("data", name)
+
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -19,7 +21,6 @@ def load_image(name, colorkey=None):
         else:
             image = image.convert_alpha()
     return image
-
 
 
 class Particle(pygame.sprite.Sprite):
@@ -61,7 +62,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, platforms, grounds, waters, walls):
         super().__init__()
         self.point = "left"
-        self.image = load_image("images\Main_hero_left_1.png")
+        self.image = load_image("images/Main_hero_left_1.png")
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))
         self.speed = PLAYER_SPEED
         self.health = PLAYER_HEALTH
@@ -86,7 +87,7 @@ class Player(pygame.sprite.Sprite):
         self._handle_rotation()
         self._handle_boundaries()
         self._animated_movement()
-    
+
     def _animated_movement(self):
         number_of_pos = self.time_num % 3 + 1 
         if self.point == "left":
@@ -104,10 +105,10 @@ class Player(pygame.sprite.Sprite):
         self.velocity_x = 0
         self.velocity_y = 0
         if keys[pygame.K_a]:
-            self.velocity_x, self.point = -self.speed, 'left'
+            self.velocity_x, self.point = -self.speed, "left"
             self.set_pos()
         if keys[pygame.K_d]:
-            self.velocity_x, self.point = self.speed, 'right'
+            self.velocity_x, self.point = self.speed, "right"
             self.set_pos()
         if keys[pygame.K_w]:
             self.velocity_y = -self.speed
@@ -245,8 +246,9 @@ class Scorpion(pygame.sprite.Sprite):
         self.time += 1
         if self.col_with_player:
             self.time_col_player += 1
-        if self.time_col_player > 6:
+        if self.time_col_player > 30:
             self.col_with_player = False
+            self.time_col_player = 0
         if self.time % 30:
             self.time_num += 1
         if self.player.rect.x > self.rect.x:
@@ -266,6 +268,7 @@ class Scorpion(pygame.sprite.Sprite):
         
         if self.atack_is:
             self.image = load_image(f"images\scorpion_atack_{self.pos}_{self.time_num % 3 + 1}.png")
+        print(self.image)
         future_rect_x = self.rect.copy()
         future_rect_x.x += v_x
 

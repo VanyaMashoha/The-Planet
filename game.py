@@ -6,7 +6,7 @@ from pytmx.util_pygame import load_pygame
 from map_classes.ground import Ground
 from map_classes.water import Water
 from map_classes.mountain import Mountain
-from map_classes.crator import Crator
+from crator import Crator
 
 
 class Game:
