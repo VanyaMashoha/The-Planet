@@ -7,6 +7,13 @@ from constants import *
 
 
 def load_image(name, colorkey=None):
+    '''
+    Загрузка изображения
+
+    :param name: путь к изображению
+    :param colorkey: цветовой ключ
+    :return: image
+    '''
     fullname = os.path.join("data", name)
 
     if not os.path.isfile(fullname):
@@ -25,6 +32,15 @@ def load_image(name, colorkey=None):
 
 class Particle(pygame.sprite.Sprite):
     def __init__(self, x, y, color):
+        '''
+        Инициализация класса частиц
+
+        :param x: позиция по x
+        :param y: позиция по y
+        :param color: цвет
+
+        :return: None
+        '''
         super().__init__()
         size = random.randint(2, 4)
         self.image = pygame.Surface((size, size))
@@ -39,6 +55,11 @@ class Particle(pygame.sprite.Sprite):
         self.lifetime = PARTICLE_LIFETIME
 
     def update(self):
+        '''
+        Обновление позиции частицы
+
+        :return: None
+        '''
         self.velocity_y += GRAVITY * 0.1
         self.rect.x += self.velocity_x
         self.rect.y += self.velocity_y
@@ -50,6 +71,16 @@ class Particle(pygame.sprite.Sprite):
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
+        '''
+        Инициализация класса платформы
+
+        :param x: позиция по x
+        :param y: позиция по y
+        :param width: ширина
+        :param height: высота
+
+        :return: None
+        '''
         super().__init__()
         self.image = pygame.Surface((width, height))
         self.image.fill(BROWN)
@@ -60,6 +91,16 @@ class Platform(pygame.sprite.Sprite):
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, platforms, grounds, waters, walls):
+        '''
+        Инициализация класса игрока
+
+        :param platforms:
+        :param grounds:
+        :param waters:
+        :param walls:
+
+        :return: None
+        '''
         super().__init__()
         self.point = "left"
         self.image = load_image("images/Main_hero_left_1.png")
