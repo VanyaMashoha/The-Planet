@@ -91,9 +91,9 @@ class Player(pygame.sprite.Sprite):
     def _animated_movement(self):
         number_of_pos = self.time_num % 3 + 1 
         if self.point == "left":
-            self.image = load_image(f"images\Main_hero_left_{number_of_pos}.png")
+            self.image = load_image(f"images/Main_hero_left_{number_of_pos}.png")
         else:
-            self.image = load_image(f"images\Main_hero_right_{number_of_pos}.png")
+            self.image = load_image(f"images/Main_hero_right_{number_of_pos}.png")
 
     def set_pos(self):
         if self.time_old == 0:
@@ -225,7 +225,7 @@ class Bullet(pygame.sprite.Sprite):
 class Scorpion(pygame.sprite.Sprite):
     def __init__(self, x, y, player, walls, waters, bullets):
         super().__init__()
-        self.image = load_image("images\scorpion_walk_right_1.png")
+        self.image = load_image("images/scorpion_walk_right_1.png")
         self.rect = self.image.get_rect(center = (x, y))
         self.speed = SCORPION_SPEED
         self.health = SCORPION_HEALTH
@@ -253,21 +253,21 @@ class Scorpion(pygame.sprite.Sprite):
             self.time_num += 1
         if self.player.rect.x > self.rect.x:
             self.pos = 'left'
-            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
             v_x = self.speed
         else:
             self.pos = 'right'
-            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
             v_x = -self.speed
         if self.player.rect.y > self.rect.y:
-            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
             v_y = self.speed
         else:
-            self.image = load_image(f"images\scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
             v_y = -self.speed
         
         if self.atack_is:
-            self.image = load_image(f"images\scorpion_atack_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(f"images/scorpion_atack_{self.pos}_{self.time_num % 3 + 1}.png")
         print(self.image)
         future_rect_x = self.rect.copy()
         future_rect_x.x += v_x
