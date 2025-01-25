@@ -3,7 +3,10 @@ import os
 import random
 import pygame
 import sys
+
+import weapon_inventory
 from constants import *
+from weapon_inventory import *
 
 
 def load_image(name, colorkey=None):
@@ -102,10 +105,11 @@ class Player(pygame.sprite.Sprite):
         :return: None
         '''
         super().__init__()
+        self.wpn = weapon_inventory.inventory[1]
         self.point = "left"
         self.image = load_image("images/Main_hero_left_1.png")
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))
-        self.speed = PLAYER_SPEED
+        self.speed = self.wpn.plr_spd
         self.health = PLAYER_HEALTH
         self.angle = 0
 
@@ -128,6 +132,7 @@ class Player(pygame.sprite.Sprite):
         self._handle_rotation()
         self._handle_boundaries()
         self._animated_movement()
+        self._handle_weapon_change(keys)
 
     def _animated_movement(self):
         number_of_pos = self.time_num % 3 + 1 
@@ -238,17 +243,46 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = SCREEN_HEIGHT
             self.on_ground = True
 
+    def _handle_weapon_change(self, keys):
+        if keys[pygame.K_1] and self.wpn != weapon_inventory.inventory[1]:
+            self.wpn = weapon_inventory.inventory[1]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_2] and self.wpn != weapon_inventory.inventory[2]:
+            self.wpn = weapon_inventory.inventory[2]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_3] and self.wpn != weapon_inventory.inventory[3]:
+            self.wpn = weapon_inventory.inventory[3]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_4] and self.wpn != weapon_inventory.inventory[4]:
+            self.wpn = weapon_inventory.inventory[4]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_5] and self.wpn != weapon_inventory.inventory[5]:
+            self.wpn = weapon_inventory.inventory[5]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_6] and self.wpn != weapon_inventory.inventory[6]:
+            self.wpn = weapon_inventory.inventory[6]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_7] and self.wpn != weapon_inventory.inventory[7]:
+            self.wpn = weapon_inventory.inventory[7]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_8] and self.wpn != weapon_inventory.inventory[8]:
+            self.wpn = weapon_inventory.inventory[8]
+            self.speed = self.wpn.plr_spd
+        elif keys[pygame.K_9] and self.wpn != weapon_inventory.inventory[9]:
+            self.wpn = weapon_inventory.inventory[9]
+            self.speed = self.wpn.plr_spd
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle, walls):
+    def __init__(self, x, y, angle, walls, weapon_type):
         super().__init__()
-        self.image = pygame.Surface((10, 5))
-        self.image.fill(YELLOW)
+        self.image = pygame.Surface(weapon_type.blt_size)
+        self.image.fill(weapon_type.blt_clr)
         self.rect = self.image.get_rect(center=(x, y))
         self.angle = math.radians(angle)
-        self.speed = BULLET_SPEED
+        self.speed = weapon_type.blt_spd
         self.position = pygame.math.Vector2(x, y)
         self.walls = walls
+        self.damage = weapon_type.blt_dmg
 
     def update(self):
         self.position.x += math.cos(self.angle) * self.speed

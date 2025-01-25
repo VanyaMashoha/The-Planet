@@ -1,3 +1,5 @@
+from stat import S_ISCHR
+
 import pygame
 import os
 from constants import *
@@ -82,15 +84,17 @@ class Game:
                 keys = self.handle_events()
                 self.update(keys)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1: # Если нажата ЛКМ
-                    self._create_bullet() # Создание пули
+                if event.button == 1:
+                    # Если нажата ЛКМ
+                    for i in range(self.player.wpn.blt_n):
+                        self._create_bullet() # Создание пули
 
         return keys
 
     # Создание пули
     def _create_bullet(self):
         bullet = Bullet(
-            self.player.rect.centerx, self.player.rect.centery, self.player.angle, self.mountain_group
+            self.player.rect.centerx, self.player.rect.centery, self.player.angle, self.mountain_group, self.player.wpn
         )
         self.bullets.add(bullet) # Добавление пули в группу
         self.all_sprites.add(bullet) # Добавление пули в общую группу
@@ -110,7 +114,7 @@ class Game:
         for bullet in self.bullets:
             if pygame.sprite.spritecollide(bullet, self.platforms, False):
                 self.create_impact_particles(
-                    bullet.rect.centerx, bullet.rect.centery, ORANGE
+                    bullet.rect.centerx, bullet.rect.centery, bullet.weapon_type.blt_clr
                 )
                 bullet.kill()
                 continue
@@ -120,9 +124,11 @@ class Game:
         self.all_sprites.draw(self.screen)
 
         # Отрисовка UI
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(None, 50)
         health_text = font.render(f"Health: {self.player.health}", True, WHITE)
-        self.screen.blit(health_text, (10, 10))
+        weapon_text = font.render(self.player.wpn.name, True, WHITE)
+        self.screen.blit(health_text, health_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 10)))
+        self.screen.blit(weapon_text, weapon_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 10 + 50)))
 
         pygame.display.flip()
 
