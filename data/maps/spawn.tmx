@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="64" tileheight="64" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="../../../../Programs/TieldMap/sets/Mars.tsx"/>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="64" tileheight="64" infinite="0" nextlayerid="3" nextobjectid="101">
+ <editorsettings>
+  <export target="spawn.tmx" format="tmx"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../tilesets/Mars.tsx"/>
  <layer id="1" name="Tile Layer 1" width="30" height="17">
   <data encoding="csv">
 1,1,1,1,1,10,1,1,1,1,10,1,1,1,1,1,1,1,1,1,7,11,11,11,11,11,11,11,11,11,
-10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,7,11,11,11,11,11,11,11,11,11,
+1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,7,11,11,11,11,11,11,11,11,11,
 1,1,1,1,1,1,1,10,1,1,1,1,10,1,1,1,1,1,1,1,7,11,11,11,11,11,11,11,11,11,
 1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,7,11,11,11,11,11,11,11,11,11,
 1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,10,1,1,1,1,2,11,11,11,11,11,11,11,11,11,
@@ -12,14 +15,105 @@
 1,1,1,1,1,1,10,1,1,1,1,1,10,1,1,1,1,1,1,1,1,7,11,11,11,11,11,11,11,11,
 1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,7,11,11,11,11,11,11,11,11,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,11,11,11,11,11,11,11,11,
-1,1,1,1,10,1,1,1,1,10,1,1,1,1,10,1,1,1,1,1,1,1,2,11,11,11,11,11,11,11,
-10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,7,11,11,11,11,11,11,
-1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,7,11,11,11,11,11,11,
-1,1,10,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7,11,11,11,11,11,11,
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,2,6,6,6,11,11,11,
-1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,2,6,6,
+1,1,1,1,10,1,1,1,1,10,1,1,1,1,10,1,1,1,1,1,1,1,7,11,11,11,11,11,11,11,
+10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,7,11,11,11,11,11,11,11,
+1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,7,11,11,11,11,11,11,11,
+1,1,10,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,7,11,11,11,11,11,11,11,
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,2,6,6,6,6,6,6,6,
+1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,10,1,1,1,1,1
 </data>
  </layer>
+ <objectgroup id="2" name="objects_of_ground">
+  <object id="1" type="ground" x="0" y="0" width="320" height="64"/>
+  <object id="3" type="ground" x="384" y="0" width="256" height="64"/>
+  <object id="4" type="ground" x="704" y="0" width="576" height="64"/>
+  <object id="5" type="ground" x="64" y="64" width="960" height="64"/>
+  <object id="6" type="ground" x="1088" y="64" width="192" height="64"/>
+  <object id="8" type="ground" x="0" y="128" width="448" height="64"/>
+  <object id="9" type="ground" x="512" y="128" width="256" height="64"/>
+  <object id="10" type="ground" x="832" y="128" width="320" height="128"/>
+  <object id="11" type="ground" x="1152" y="128" width="128" height="64"/>
+  <object id="12" type="ground" x="0" y="192" width="128" height="448"/>
+  <object id="13" type="ground" x="192" y="192" width="384" height="192"/>
+  <object id="14" type="ground" x="576" y="192" width="256" height="64"/>
+  <object id="15" type="ground" x="1216" y="192" width="64" height="448"/>
+  <object id="16" type="ground" x="1280" y="320" width="64" height="256"/>
+  <object id="17" type="ground" x="1280" y="576" width="128" height="512"/>
+  <object id="18" type="water" x="1408" y="640" width="64" height="256"/>
+  <object id="19" type="ground" x="1408" y="896" width="320" height="128"/>
+  <object id="20" type="ground" x="1408" y="1024" width="128" height="64"/>
+  <object id="21" type="ground" x="1600.09" y="1024" width="320" height="64"/>
+  <object id="22" type="ground" x="1728.02" y="960" width="192" height="64"/>
+  <object id="23" type="ground" x="128" y="256" width="64" height="192"/>
+  <object id="24" type="ground" x="192" y="384" width="192" height="192"/>
+  <object id="26" type="ground" x="128" y="512" width="64" height="256"/>
+  <object id="27" type="ground" x="64" y="640" width="64" height="448"/>
+  <object id="28" type="ground" x="0" y="704" width="64" height="320"/>
+  <object id="29" type="ground" x="128" y="832" width="192" height="256"/>
+  <object id="30" type="ground" x="192" y="576" width="64" height="256"/>
+  <object id="31" type="ground" x="256" y="640" width="64" height="192"/>
+  <object id="32" type="ground" x="448" y="384" width="128" height="384"/>
+  <object id="34" type="ground" x="320" y="576" width="64" height="384"/>
+  <object id="35" type="ground" x="384" y="448" width="64" height="512"/>
+  <object id="36" type="ground" x="320" y="1024" width="704" height="64"/>
+  <object id="37" type="ground" x="384" y="960" width="896" height="64"/>
+  <object id="38" type="ground" x="1088" y="1024" width="192" height="64"/>
+  <object id="39" type="ground" x="448.063" y="832" width="256" height="128"/>
+  <object id="40" type="ground" x="768" y="832" width="192" height="128"/>
+  <object id="41" type="ground" x="960" y="896.5" width="256" height="64"/>
+  <object id="42" type="ground" x="1024" y="832" width="256" height="64"/>
+  <object id="44" type="ground" x="704" y="256" width="64" height="640"/>
+  <object id="45" type="ground" x="512" y="768" width="192" height="64"/>
+  <object id="47" type="ground" x="576" y="640" width="128" height="128"/>
+  <object id="48" type="ground" x="640" y="256" width="64" height="384"/>
+  <object id="49" type="ground" x="576" y="320" width="64" height="256"/>
+  <object id="50" type="ground" x="768" y="256" width="192" height="128"/>
+  <object id="51" type="ground" x="1024" y="256" width="192" height="128"/>
+  <object id="52" type="ground" x="960" y="320" width="64" height="512"/>
+  <object id="54" type="ground" x="1024" y="384" width="192" height="64"/>
+  <object id="55" type="ground" x="1024" y="448" width="128" height="256"/>
+  <object id="56" type="ground" x="1152" y="512" width="64" height="192"/>
+  <object id="57" type="ground" x="1024" y="704" width="256" height="128"/>
+  <object id="58" type="ground" x="768" y="768" width="192" height="64"/>
+  <object id="59" type="ground" x="832" y="640" width="128" height="128"/>
+  <object id="60" type="ground" x="768" y="448" width="64" height="256"/>
+  <object id="61" type="ground" x="832" y="384" width="64" height="256"/>
+  <object id="62" type="ground" x="896" y="384" width="64" height="192"/>
+  <object id="63" type="water" x="1280" y="0" width="640" height="320"/>
+  <object id="64" type="water" x="1344" y="320" width="576" height="256"/>
+  <object id="65" type="water" x="1408" y="576" width="512" height="64"/>
+  <object id="66" type="water" x="1472" y="640" width="448" height="256"/>
+  <object id="67" type="water" x="1728" y="896" width="192" height="64"/>
+  <object id="70" type="crator" x="320" y="0" width="64" height="64"/>
+  <object id="71" type="crator" x="640" y="0" width="64" height="64"/>
+  <object id="72" type="crator" x="0" y="64" width="64" height="64"/>
+  <object id="73" type="crator" x="1024" y="64" width="64" height="64"/>
+  <object id="74" type="crator" x="448" y="128" width="64" height="64"/>
+  <object id="75" type="crator" x="768" y="128" width="64" height="64"/>
+  <object id="76" type="crator" x="1152" y="192" width="64" height="64"/>
+  <object id="77" type="crator" x="128" y="192" width="64" height="64"/>
+  <object id="78" type="crator" x="576" y="256" width="64" height="64"/>
+  <object id="79" type="crator" x="960" y="256" width="64" height="64"/>
+  <object id="80" type="crator" x="1152" y="448" width="64" height="64"/>
+  <object id="81" type="crator" x="384" y="384" width="64" height="64"/>
+  <object id="83" type="crator" x="768" y="384" width="64" height="64"/>
+  <object id="84" type="crator" x="128" y="448" width="64" height="64"/>
+  <object id="85" type="crator" x="256" y="576" width="64" height="64"/>
+  <object id="86" type="crator" x="576" y="576" width="64" height="64"/>
+  <object id="87" type="crator" x="896" y="576" width="64" height="64"/>
+  <object id="88" type="crator" x="1216" y="640" width="64" height="64"/>
+  <object id="89" type="crator" x="0" y="640" width="64" height="64"/>
+  <object id="90" type="crator" x="128" y="768" width="64" height="64"/>
+  <object id="91" type="crator" x="448" y="768" width="64" height="64"/>
+  <object id="92" type="crator" x="768" y="704" width="64" height="64"/>
+  <object id="93" type="crator" x="960" y="832" width="64" height="64"/>
+  <object id="94" type="crator" x="1216" y="896" width="64" height="64"/>
+  <object id="96" type="crator" x="704" y="896" width="64" height="64"/>
+  <object id="97" type="crator" x="320" y="960" width="64" height="64"/>
+  <object id="98" type="crator" x="0" y="1024" width="64" height="64"/>
+  <object id="99" type="crator" x="1024" y="1024" width="64" height="64"/>
+  <object id="100" type="crator" x="1536" y="1024" width="64" height="64"/>
+ </objectgroup>
 </map>
