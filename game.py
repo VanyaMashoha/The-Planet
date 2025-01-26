@@ -11,6 +11,7 @@ from map_classes.ground import Ground
 from map_classes.water import Water
 from map_classes.mountain import Mountain
 from crator import Crator
+from audio import sounds
 
 
 class Game:
@@ -37,6 +38,8 @@ class Game:
             one += 1
             if one == 30:
                 one, two = 0, two + 1
+        pygame.mixer.music.load('data/sounds/music/soundtrack1.mp3')
+        pygame.mixer.music.play(-1)
 
     # Отрисовка карты
     def draw_map(self, screen, tmx_data: TiledMap):
@@ -98,6 +101,7 @@ class Game:
         )
         self.bullets.add(bullet) # Добавление пули в группу
         self.all_sprites.add(bullet) # Добавление пули в общую группу
+        sounds['laser'].play()
 
     # Обновление состояния игры
     def update(self, keys):

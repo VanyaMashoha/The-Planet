@@ -7,6 +7,7 @@ import sys
 import weapon_inventory
 from constants import *
 from weapon_inventory import *
+from audio import sounds
 
 
 def load_image(name, colorkey=None):
@@ -245,30 +246,39 @@ class Player(pygame.sprite.Sprite):
 
     def _handle_weapon_change(self, keys):
         if keys[pygame.K_1] and self.wpn != weapon_inventory.inventory[1]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[1]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_2] and self.wpn != weapon_inventory.inventory[2]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[2]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_3] and self.wpn != weapon_inventory.inventory[3]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[3]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_4] and self.wpn != weapon_inventory.inventory[4]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[4]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_5] and self.wpn != weapon_inventory.inventory[5]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[5]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_6] and self.wpn != weapon_inventory.inventory[6]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[6]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_7] and self.wpn != weapon_inventory.inventory[7]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[7]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_8] and self.wpn != weapon_inventory.inventory[8]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[8]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_9] and self.wpn != weapon_inventory.inventory[9]:
+            sounds['ui'].play()
             self.wpn = weapon_inventory.inventory[9]
             self.speed = self.wpn.plr_spd
 
@@ -369,11 +379,13 @@ class Scorpion(pygame.sprite.Sprite):
             self.time_num = 0
             self.player.health -= 10
             self.col_with_player = True
+            sounds['player_dmg'].play()
         
         for bullet in self.bullets:
             if self.rect.colliderect(bullet.rect):
                 self.health -= 10
                 bullet.kill()
+                sounds['enemy_dmg'].play()
 
         if self.health < 0:
             self.kill()
