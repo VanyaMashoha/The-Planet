@@ -38,7 +38,7 @@ class DatabaseManager:
         x, y, map_name = 0, 0, ''
         for one, two, mapus in res:
             x, y, map_name = one, two, mapus
-        print(x, y, map_name)
+        # print(x, y, map_name)
         return [x, y, map_name]
 
     def close(self):
