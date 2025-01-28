@@ -1,4 +1,4 @@
-from weapon_class import Weapon
+from .weapon_class import Weapon
 
 
 # Типы оружия игрока:
@@ -10,7 +10,7 @@ nothing = Weapon('Nothing',1,
 
 pistol = Weapon('Pistol', 1,
                 2, (8, 4),40,
-                1, 20, 'Orange')
+                20, 'Orange')
 
 rifle_semi = Weapon('Rifle (Semi)', 0.5,
                4, (10, 5), 80,

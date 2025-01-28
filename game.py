@@ -1,19 +1,16 @@
 from stat import S_ISCHR
 
 import pygame
-import os
 from constants import *
 from database import DatabaseManager
 from pytmx.util_pygame import load_pygame
-from pytmx import TiledMap
 from sprites.bullet import Bullet
 from sprites.player import Player
-from sprites.scorpion import Scorpion
 from map_classes.ground import Ground
 from map_classes.water import Water
 from map_classes.mountain import Mountain
 from crator import Crator
-from audio import sounds
+from sprites.audio import sounds
 
 
 class Game:
@@ -73,7 +70,7 @@ class Game:
         self.bullets = pygame.sprite.Group()
         self.scorpion_group = pygame.sprite.Group()
 
-        self.player = Player(self.platforms, self.ground_group, self.water_group, self.mountain_group, self.scorpion_group)
+        self.player = Player(self.platforms, self.ground_group, self.water_group, self.mountain_group)
         self.player.rect.x = self.map_prop[0]
         self.player.rect.y = self.map_prop[1]
         self.particles = pygame.sprite.Group()
@@ -115,9 +112,6 @@ class Game:
     # Обновление состояния игры
     def update(self, keys):
         self.player.update(keys)
-        map_prop = self.player.map_give()
-        if map_prop[0]:
-            self.name_map = map_prop[1]
         self.bullets.update()
         self.particles.update()
         self.crator_group.update()
@@ -159,6 +153,6 @@ class Game:
             self.draw()
             self.clock.tick(FPS)
 
-        self.sql_commands.save_progress(self.player.rect.x, self.player.rect.y, self.name_map)
+        #self.sql_commands.save_progress(self.player.rect.x, self.player.rect.y, self.name_map)
         self.db.close()
         pygame.quit()

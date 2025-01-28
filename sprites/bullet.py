@@ -3,15 +3,16 @@ import math
 from constants import *
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle, walls):
+    def __init__(self, x, y, angle, walls, weapon_type):
         super().__init__()
-        self.image = pygame.Surface((10, 5))
-        self.image.fill(YELLOW)
+        self.image = pygame.Surface(weapon_type.blt_size)
+        self.image.fill(weapon_type.blt_clr)
         self.rect = self.image.get_rect(center=(x, y))
         self.angle = math.radians(angle)
-        self.speed = BULLET_SPEED
+        self.speed = weapon_type.blt_spd
         self.position = pygame.math.Vector2(x, y)
         self.walls = walls
+        self.damage = weapon_type.blt_dmg
 
     def update(self):
         self.position.x += math.cos(self.angle) * self.speed
