@@ -70,9 +70,10 @@ class Game:
         self.bullets = pygame.sprite.Group()
         self.scorpion_group = pygame.sprite.Group()
 
-        self.player = Player(self.platforms, self.ground_group, self.water_group, self.mountain_group)
+        self.player = Player(self.platforms, self.ground_group, self.water_group, self.mountain_group, self.scorpion_group)
         self.player.rect.x = self.map_prop[0]
         self.player.rect.y = self.map_prop[1]
+        self.player.map = self.map_prop[2]
         self.particles = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group(self.platforms, self.player,
                 self.water_group, self.mountain_group, self.crator_group
@@ -121,6 +122,7 @@ class Game:
             self.check_map = False
 
         self._handle_collisions()
+        self.name_map = self.player.map
 
     # Обработка столкновений
     def _handle_collisions(self):
@@ -153,6 +155,6 @@ class Game:
             self.draw()
             self.clock.tick(FPS)
 
-        #self.sql_commands.save_progress(self.player.rect.x, self.player.rect.y, self.name_map)
+        self.sql_commands.save_progress(self.player.rect.x, self.player.rect.y, self.name_map)
         self.db.close()
         pygame.quit()

@@ -1,30 +1,14 @@
 from .weapon_inventory import *
 from .constants import *
 from .audio import sounds
-import sys
 import pygame
-import os
 import math
 
+from sprites import load_image
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join("data", name)
-
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey)
-        else:
-            image = image.convert_alpha()
-    return image
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, platforms, grounds, waters, walls):
+    def __init__(self, platforms, grounds, waters, walls, scorpions):
         '''
         Инициализация класса игрока
 
@@ -43,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = self.wpn.plr_spd
         self.health = PLAYER_HEALTH
         self.angle = 0
-
+        
         self.velocity_y = 0
         self.velocity_x = 0
         self.number_of_pos = 1
@@ -55,6 +39,7 @@ class Player(pygame.sprite.Sprite):
         self.grounds = grounds
         self.waters = waters
         self.walls = walls
+        self.scorpions = scorpions
 
     def update(self, keys):
         self.time += 1
@@ -109,11 +94,18 @@ class Player(pygame.sprite.Sprite):
                 self.velocity_x = 0
             if future_rect.colliderect(wall.rect) or future_rect.colliderect(wall.rect):
                 self.velocity_y = 0
-
+        
         # Проверка границ карты
         if 0 <= future_rect.x and future_rect.right <= SCREEN_WIDTH:
             self.rect.x += self.velocity_x
 
+        if self.map == 'spawn' and future_rect.right >= SCREEN_WIDTH and len(self.scorpions) == 0:
+            self.map = 'right_map'
+            
+        elif self.map == 'right_map' and future_rect.left <= SCREEN_WIDTH and len(self.scorpions) == 0:
+            self.map = 'spawn'
+            
+        
         for platform in self.platforms:
             if self.rect.colliderect(platform.rect):
                 if self.velocity_x > 0:
