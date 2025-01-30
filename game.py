@@ -7,7 +7,7 @@ from sprites.player import Player
 from map_classes.ground import Ground
 from map_classes.water import Water
 from map_classes.mountain import Mountain
-from crator import Crator
+from sprites.crator import Crator
 from sprites.audio import sounds, player_dmg
 
 
@@ -30,6 +30,10 @@ class Game:
         self.reset_map()
 
     def reset_map(self):
+        """
+        Сброс всех групп спрайтов и создание новой карты
+        """
+        
         for i in self.water_group:
             i.kill()
         for i in self.ground_group:
@@ -49,8 +53,12 @@ class Game:
                                     self.water_group, self.bullets))
                 
 
-    # Отрисовка карты
     def draw_map(self, screen, tmx_data):
+        """
+        Отрисовка карты
+        :param screen: экран для отрисовки
+        :param tmx_data: объект карты
+        """
         for layer in tmx_data.visible_layers:
             try:
                 for x, y, gid in layer:
@@ -60,8 +68,11 @@ class Game:
             except Exception:
                 pass
 
-    # Инициализация групп спрайтов
+
     def _init_sprites(self):
+        """
+        Инициализация групп спрайтов
+        """
         self.platforms = pygame.sprite.Group()
         self.ground_group = pygame.sprite.Group()
         self.water_group = pygame.sprite.Group()
@@ -80,6 +91,10 @@ class Game:
 
     # Обработка событий 
     def handle_events(self):
+        """
+        Обработка нажатий клавиш
+        """
+        
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Если окно закрыто
@@ -100,8 +115,12 @@ class Game:
 
         return keys
 
-    # Создание пули
+
     def _create_bullet(self):
+        """
+        Создание пули в зависимости от оружия игрока
+        """
+        
         bullet = Bullet(
             self.player.rect.centerx, self.player.rect.centery, self.player.angle, self.mountain_group, self.player.wpn
         )
@@ -109,8 +128,11 @@ class Game:
         self.all_sprites.add(bullet) # Добавление пули в общую группу
         sounds['laser'].play()
 
-    # Обновление состояния игры
+
     def update(self, keys):
+        """
+        Обновление состояния игры
+        """
         self.player.update(keys)
         self.bullets.update()
         self.particles.update()
@@ -122,8 +144,11 @@ class Game:
         self._handle_collisions()
         self.name_map = self.player.map
 
-    # Обработка столкновений
+
     def _handle_collisions(self):
+        """
+        Обработка столкновений между спрайтами
+        """
         for bullet in self.bullets:
             if pygame.sprite.spritecollide(bullet, self.platforms, False):
                 self.create_impact_particles(
@@ -133,6 +158,9 @@ class Game:
                 continue
 
     def draw(self):
+        """
+        Отрисовка UI, спрайтов и карты на экране
+        """
         self.draw_map(self.screen, self.tmx_data)
         self.all_sprites.draw(self.screen)
         self.scorpion_group.draw(self.screen)
@@ -147,6 +175,9 @@ class Game:
         pygame.display.flip()
 
     def draw_menu(self):
+        """
+        Отрисовка меню в начале игры
+        """
         self.screen.fill((2, 23, 51))
         font = pygame.font.Font(None, 100)
         font2 = pygame.font.Font(None, 50)
@@ -158,6 +189,9 @@ class Game:
         pygame.display.flip()
 
     def draw_game_over(self):
+        """
+        Отрисовка экрана конца игры
+        """
         self.screen.fill((2, 23, 51))
         font = pygame.font.Font(None, 90)
         game_over_text = font.render('GAME OVER', True, (252, 3, 248))
@@ -173,6 +207,9 @@ class Game:
 
 
     def run(self):
+        """
+        Запуск игры
+        """
         while self.running:
             keys = self.handle_events()
             if self.state == 'menu':

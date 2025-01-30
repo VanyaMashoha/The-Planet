@@ -7,6 +7,17 @@ from sprites import load_image
 
 class Scorpion(pygame.sprite.Sprite):
     def __init__(self, x, y, player, walls, waters, bullets):
+        """
+        Класс скорпиона
+
+        :param x:
+        :param y:
+        :param player:
+        :param walls:
+        :param waters:
+        :param bullets:
+        :param bullets:
+        """
         super().__init__()
         self.image = load_image("images/scorpion_walk_right_1.png")
         
@@ -33,6 +44,9 @@ class Scorpion(pygame.sprite.Sprite):
         self.atack_is = False
 
     def update(self):
+        """
+        Обновление скорпиона
+        """
         v_x = 0
         v_y = 0
         self.time += 1
