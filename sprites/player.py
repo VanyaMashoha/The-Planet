@@ -28,6 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = self.wpn.plr_spd
         self.health = PLAYER_HEALTH
         self.angle = 0
+        self.map = 'spawn'
         
         self.velocity_y = 0
         self.velocity_x = 0
@@ -102,9 +103,11 @@ class Player(pygame.sprite.Sprite):
 
         if self.map == 'spawn' and future_rect.right >= SCREEN_WIDTH and len(self.scorpions) == 0:
             self.map = 'right_map'
+            self.rect.x = self.rect.x - 1500
             
         elif self.map == 'right_map' and future_rect.left <= SCREEN_WIDTH and len(self.scorpions) == 0:
             self.map = 'spawn'
+            self.rect.x = self.rect.x + 1500
             
         
         for platform in self.platforms:

@@ -24,7 +24,7 @@ class Game:
         self.map_prop = self.sql_commands.load_progress() # в tmx будет та карта которую вернула эта команда
         self._init_sprites()
         self.running = True
-        self.name_map = self.map_prop[2]
+        self.name_map = 'spawn'
         self.tmx_data = load_pygame(f'data/maps/spawn.tmx')
         self.check_map = False
         self.reset_map()
@@ -73,7 +73,6 @@ class Game:
         self.player = Player(self.platforms, self.ground_group, self.water_group, self.mountain_group, self.scorpion_group)
         self.player.rect.x = self.map_prop[0]
         self.player.rect.y = self.map_prop[1]
-        self.player.map = self.map_prop[2]
         self.particles = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group(self.platforms, self.player,
                 self.water_group, self.mountain_group, self.crator_group
@@ -117,10 +116,9 @@ class Game:
         self.particles.update()
         self.crator_group.update()
         self.scorpion_group.update()
-        if self.check_map:
+        if self.player.map != self.name_map:
             self.reset_map()
-            self.check_map = False
-
+        self.tmx_data = load_pygame(f'data/maps/{self.player.map}.tmx')
         self._handle_collisions()
         self.name_map = self.player.map
 
