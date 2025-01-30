@@ -9,7 +9,7 @@ from sprites import load_image
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, platforms, grounds, waters, walls, scorpions):
-        '''
+        """
         Инициализация класса игрока
 
         :param platforms:
@@ -18,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         :param walls:
 
         :return: None
-        '''
+        """
         super().__init__()
         self.score = 0
         self.wpn = inventory[1]
@@ -28,7 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.speed = self.wpn.plr_spd
         self.health = PLAYER_HEALTH
         self.angle = 0
-        
+        self.map = "spawn"
+
         self.velocity_y = 0
         self.velocity_x = 0
         self.number_of_pos = 1
@@ -52,7 +53,7 @@ class Player(pygame.sprite.Sprite):
         self._handle_weapon_change(keys)
 
     def _animated_movement(self):
-        number_of_pos = self.time_num % 3 + 1 
+        number_of_pos = self.time_num % 3 + 1
         if self.point == "left":
             self.image = load_image(f"images/Main_hero_left_{number_of_pos}.png")
         else:
@@ -85,28 +86,43 @@ class Player(pygame.sprite.Sprite):
         future_rect.y += self.velocity_y
 
         for water in self.waters:
-            if future_rect.colliderect(water.rect) or future_rect.colliderect(water.rect):
+            if future_rect.colliderect(water.rect) or future_rect.colliderect(
+                water.rect
+            ):
                 self.velocity_x = 0
-            if future_rect.colliderect(water.rect) or future_rect.colliderect(water.rect):
+            if future_rect.colliderect(water.rect) or future_rect.colliderect(
+                water.rect
+            ):
                 self.velocity_y = 0
 
         for wall in self.walls:
-            if future_rect.colliderect(wall.rect) or future_rect.colliderect(wall.rect_right):
+            if future_rect.colliderect(wall.rect) or future_rect.colliderect(
+                wall.rect_right
+            ):
                 self.velocity_x = 0
             if future_rect.colliderect(wall.rect) or future_rect.colliderect(wall.rect):
                 self.velocity_y = 0
-        
+
         # Проверка границ карты
         if 0 <= future_rect.x and future_rect.right <= SCREEN_WIDTH:
             self.rect.x += self.velocity_x
 
-        if self.map == 'spawn' and future_rect.right >= SCREEN_WIDTH and len(self.scorpions) == 0:
-            self.map = 'right_map'
-            
-        elif self.map == 'right_map' and future_rect.left <= SCREEN_WIDTH and len(self.scorpions) == 0:
-            self.map = 'spawn'
-            
-        
+        if (
+            self.map == "spawn"
+            and future_rect.right >= SCREEN_WIDTH
+            and len(self.scorpions) == 0
+        ):
+            self.map = "right_map"
+            self.rect.x = self.rect.x - 1500
+
+        elif (
+            self.map == "right_map"
+            and future_rect.left <= SCREEN_WIDTH
+            and len(self.scorpions) == 0
+        ):
+            self.map = "spawn"
+            self.rect.x = self.rect.x + 1500
+
         for platform in self.platforms:
             if self.rect.colliderect(platform.rect):
                 if self.velocity_x > 0:
@@ -162,38 +178,38 @@ class Player(pygame.sprite.Sprite):
 
     def _handle_weapon_change(self, keys):
         if keys[pygame.K_1] and self.wpn != inventory[1]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[1]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_2] and self.wpn != inventory[2]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[2]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_3] and self.wpn != inventory[3]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[3]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_4] and self.wpn != inventory[4]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[4]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_5] and self.wpn != inventory[5]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[5]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_6] and self.wpn != inventory[6]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[6]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_7] and self.wpn != inventory[7]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[7]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_8] and self.wpn != inventory[8]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[8]
             self.speed = self.wpn.plr_spd
         elif keys[pygame.K_9] and self.wpn != inventory[9]:
-            sounds['ui'].play()
+            sounds["ui"].play()
             self.wpn = inventory[9]
             self.speed = self.wpn.plr_spd

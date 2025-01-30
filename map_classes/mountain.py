@@ -1,5 +1,6 @@
 import pygame
 
+
 class Mountain(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
         super().__init__()
