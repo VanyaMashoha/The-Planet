@@ -1,5 +1,3 @@
-from stat import S_ISCHR
-
 import pygame
 from constants import *
 from database import DatabaseManager
@@ -10,7 +8,7 @@ from map_classes.ground import Ground
 from map_classes.water import Water
 from map_classes.mountain import Mountain
 from crator import Crator
-from sprites.audio import sounds
+from sprites.audio import sounds, player_dmg
 
 
 class Game:
@@ -19,13 +17,15 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("The Planet")
         self.clock = pygame.time.Clock()
+        self.state = 'menu'
+        self.score_count = 0
         self.db = DatabaseManager()
         self.sql_commands = DatabaseManager()
         self.map_prop = self.sql_commands.load_progress() # в tmx будет та карта которую вернула эта команда
         self._init_sprites()
         self.running = True
         self.name_map = self.map_prop[2]
-        self.tmx_data = load_pygame(f'data/maps/{self.name_map}.tmx')
+        self.tmx_data = load_pygame(f'data/maps/spawn.tmx')
         self.check_map = False
         self.reset_map()
 
@@ -141,18 +141,69 @@ class Game:
 
         # Отрисовка UI
         font = pygame.font.Font(None, 50)
-        health_text = font.render(f"Health: {self.player.health}", True, WHITE)
+        health_and_score_text = font.render(f"Health: {self.player.health} | Score: {self.player.score}", True, WHITE)
         weapon_text = font.render(self.player.wpn.name, True, WHITE)
-        self.screen.blit(health_text, health_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 10)))
+        self.screen.blit(health_and_score_text, health_and_score_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 10)))
         self.screen.blit(weapon_text, weapon_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 10 + 50)))
 
         pygame.display.flip()
 
+    def draw_menu(self):
+        self.screen.fill((2, 23, 51))
+        font = pygame.font.Font(None, 100)
+        font2 = pygame.font.Font(None, 50)
+        title = font.render('THE PLANET', True, (252, 3, 248))
+        play_btn = font2.render('Press space to play', True, "White")
+        self.screen.blit(title, title.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 5)))
+        self.screen.blit(play_btn, play_btn.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
+
+        pygame.display.flip()
+
+    def draw_game_over(self):
+        self.screen.fill((2, 23, 51))
+        font = pygame.font.Font(None, 90)
+        game_over_text = font.render('GAME OVER', True, (252, 3, 248))
+        font2 = pygame.font.Font(None, 70)
+        score_text = font2.render(f'score: {self.score_count}', True, 'White')
+        font3 = pygame.font.Font(None, 50)
+        continue_btn = font3.render('Press m to get back to the menu', True, "White")
+        self.screen.blit(game_over_text, game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 5)))
+        self.screen.blit(score_text, score_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40)))
+        self.screen.blit(continue_btn, continue_btn.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
+
+        pygame.display.flip()
+
+
     def run(self):
         while self.running:
             keys = self.handle_events()
-            self.update(keys)
-            self.draw()
+            if self.state == 'menu':
+                self.player.score = 0
+                self.draw_menu()
+                if keys[pygame.K_SPACE]:
+                    self.state = 'game'
+            elif self.state == 'game_over':
+                if self.score_count < self.player.score:
+                    self.score_count += 1
+                self.draw_game_over()
+                if keys[pygame.K_m]:
+                    self.state = 'menu'
+                    self.player.health = 100
+                    self.player.score = 0
+                    self.reset_map()
+            else:
+                self.update(keys)
+                self.draw()
+                self.player.score += 1
+                if keys[pygame.K_m]:
+                    self.state = 'menu'
+                    self.player.health = 100
+                    self.player.score = 0
+                    self.reset_map()
+                if self.player.health <= 0:
+                    self.state = 'game_over'
+                    self.score_count = 0
+
             self.clock.tick(FPS)
 
         self.sql_commands.save_progress(self.player.rect.x, self.player.rect.y, self.name_map)

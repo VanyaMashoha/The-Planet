@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         :return: None
         '''
         super().__init__()
+        self.score = 0
         self.wpn = inventory[1]
         self.point = "left"
         self.image = load_image("images/Main_hero_left_1.png")

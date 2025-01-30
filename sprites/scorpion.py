@@ -2,7 +2,6 @@ import os
 import sys
 import pygame
 from constants import *
-
 from sprites import load_image
 
 
