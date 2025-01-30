@@ -20,7 +20,7 @@ class Scorpion(pygame.sprite.Sprite):
         """
         super().__init__()
         self.image = load_image("images/scorpion_walk_right_1.png")
-        
+
         # Вектор от игрока к (x, y)
         dx = x - player.rect.x
         dy = y - player.rect.y
@@ -28,7 +28,7 @@ class Scorpion(pygame.sprite.Sprite):
         # Переносим спрайт на противоположную сторону со сдвигом
         scorpion_x = x + dx + (1 if dx != 0 else 0)  # Сдвиг по X
         scorpion_y = y + dy + (1 if dy != 0 else 0)  # Сдвиг по Y
-        
+
         self.rect = self.image.get_rect(center=(scorpion_x, scorpion_y))
         self.speed = SCORPION_SPEED
         self.health = SCORPION_HEALTH
@@ -36,7 +36,7 @@ class Scorpion(pygame.sprite.Sprite):
         self.walls = walls
         self.waters = waters
         self.bullets = bullets
-        self.pos = 'right'
+        self.pos = "right"
         self.time = 0
         self.time_num = 0
         self.col_with_player = False
@@ -58,22 +58,32 @@ class Scorpion(pygame.sprite.Sprite):
         if self.time % 10 == 0:
             self.time_num += 1
         if self.player.rect.x > self.rect.x:
-            self.pos = 'right'
-            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.pos = "right"
+            self.image = load_image(
+                f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png"
+            )
             v_x = self.speed
         else:
-            self.pos = 'left'
-            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.pos = "left"
+            self.image = load_image(
+                f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png"
+            )
             v_x = -self.speed
         if self.player.rect.y > self.rect.y:
-            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(
+                f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png"
+            )
             v_y = self.speed
         else:
-            self.image = load_image(f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(
+                f"images/scorpion_walk_{self.pos}_{self.time_num % 3 + 1}.png"
+            )
             v_y = -self.speed
-        
+
         if self.atack_is:
-            self.image = load_image(f"images/scorpion_atack_{self.pos}_{self.time_num % 3 + 1}.png")
+            self.image = load_image(
+                f"images/scorpion_atack_{self.pos}_{self.time_num % 3 + 1}.png"
+            )
         future_rect = self.rect.copy()
         future_rect.x += v_x
         future_rect.y += v_y
@@ -100,7 +110,7 @@ class Scorpion(pygame.sprite.Sprite):
             self.atack_is = True
         else:
             self.atack_is = False
-        
+
         for bullet in self.bullets:
             if self.rect.colliderect(bullet.rect):
                 self.health -= 10

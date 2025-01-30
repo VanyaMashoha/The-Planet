@@ -2,6 +2,7 @@ import pygame
 from sprites.scorpion import Scorpion
 from random import randint
 
+
 class Crator(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h, player, scarpions, mountains, waters, bullets):
         super().__init__()
@@ -20,8 +21,16 @@ class Crator(pygame.sprite.Sprite):
     def update(self):
         if self.player.rect.colliderect(self.rect) and not self.check:
             if randint(1, 10) == 3 and not self.check:
-                self.scarpion_group.add(Scorpion(self.rect[0] + 32, self.rect[1] + 32, self.player,
-                                                  self.mountain_group, self.water_group, self.bullets))
+                self.scarpion_group.add(
+                    Scorpion(
+                        self.rect[0] + 32,
+                        self.rect[1] + 32,
+                        self.player,
+                        self.mountain_group,
+                        self.water_group,
+                        self.bullets,
+                    )
+                )
             self.check = True
         if not self.player.rect.colliderect(self.rect):
             self.check = False

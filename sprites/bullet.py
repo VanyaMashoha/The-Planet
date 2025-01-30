@@ -2,6 +2,7 @@ import pygame
 import math
 from constants import *
 
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, angle, walls, weapon_type):
         """

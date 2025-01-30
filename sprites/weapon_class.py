@@ -3,9 +3,16 @@ from constants import *
 
 # Класс оружия, позволяющий создавать объекты, хранящие в себе характеристики оружия
 class Weapon:
-    def __init__(self, name, player_speed_mul=1,
-                 bullet_speed_mul=1, blt_size=(10,5), bullet_dmg=100, bullet_number=1, bullet_clr='Blue'):
-
+    def __init__(
+        self,
+        name,
+        player_speed_mul=1,
+        bullet_speed_mul=1,
+        blt_size=(10, 5),
+        bullet_dmg=100,
+        bullet_number=1,
+        bullet_clr="Blue",
+    ):
         """
         Инициализация класса оружия
 
