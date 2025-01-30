@@ -28,6 +28,8 @@ class Game:
         self.tmx_data = load_pygame(f'data/maps/spawn.tmx')
         self.check_map = False
         self.reset_map()
+        pygame.mixer_music.load('data/sounds/music/soundtrack1.mp3')
+        pygame.mixer_music.play(-1)
 
     def reset_map(self):
         for i in self.water_group:
