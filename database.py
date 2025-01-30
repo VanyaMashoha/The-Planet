@@ -9,6 +9,9 @@ class DatabaseManager:
         self._init_maps()
 
     def _init_tables(self):
+        """
+        Создание таблицы в БД
+        """
         self.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS maps (
@@ -40,6 +43,9 @@ class DatabaseManager:
             self.conn.commit()
             
     def _init_maps(self):
+        """
+        Добавление карт в БД
+        """
         self.cursor.execute(
             """
             INSERT OR IGNORE INTO maps (id, name) VALUES (1, 'spawn')
@@ -54,6 +60,9 @@ class DatabaseManager:
         
 
     def save_progress(self, x, y, number):
+        """
+        Сохранение прогресса игрока в БД
+        """
         self.cursor.execute("""
                             INSERT OR REPLACE INTO progress (id, x, y, map) VALUES (1, ?, ?, (SELECT id FROM maps WHERE name = ?))
                             """, (x, y, number)
@@ -61,6 +70,10 @@ class DatabaseManager:
         self.conn.commit()
 
     def load_progress(self):
+        """
+        Загрузка прогресса игрока из БД
+        :return: (x, y, map)
+        """
         res = self.cursor.execute("""
                                   SELECT progress.x, progress.y, maps.name FROM progress JOIN maps ON progress.map = maps.id WHERE progress.id = 1
                                   """)
@@ -70,4 +83,7 @@ class DatabaseManager:
         return row[0], row[1], row[2]
 
     def close(self):
+        """
+        Закрытие соединения с БД
+        """
         self.conn.close()

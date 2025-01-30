@@ -4,6 +4,15 @@ from constants import *
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, angle, walls, weapon_type):
+        """
+        Класс пули
+
+        :param x:
+        :param y:
+        :param angle:
+        :param walls:
+        :param weapon_type:
+        """
         super().__init__()
         self.image = pygame.Surface(weapon_type.blt_size)
         self.image.fill(weapon_type.blt_clr)
@@ -15,6 +24,9 @@ class Bullet(pygame.sprite.Sprite):
         self.damage = weapon_type.blt_dmg
 
     def update(self):
+        """
+        Обновление позиции пули
+        """
         self.position.x += math.cos(self.angle) * self.speed
         self.position.y += math.sin(self.angle) * self.speed
         self.rect.center = self.position
