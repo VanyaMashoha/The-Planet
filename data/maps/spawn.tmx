@@ -85,7 +85,7 @@
   <object id="64" type="water" x="1344" y="320" width="576" height="256"/>
   <object id="65" type="water" x="1408" y="576" width="512" height="64"/>
   <object id="66" type="water" x="1472" y="640" width="448" height="256"/>
-  <object id="67" type="water" x="1728" y="896" width="192" height="64"/>
+  <object id="67" type="ground" x="1728" y="896" width="192" height="64"/>
   <object id="70" type="crator" x="320" y="0" width="64" height="64"/>
   <object id="71" type="crator" x="640" y="0" width="64" height="64"/>
   <object id="72" type="crator" x="0" y="64" width="64" height="64"/>
